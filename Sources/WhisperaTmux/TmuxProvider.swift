@@ -43,7 +43,7 @@ public struct TmuxClient: AgentSessionTransport {
     }
     public func send(_ text: String, to paneID: String) throws {
         try validate(paneID)
-        guard !text.isEmpty, text.unicodeScalars.count <= 12000, !text.contains("\u{0}") else { throw Failure.textTooLong }
+        guard !text.isEmpty, text.unicodeScalars.count <= 12000, !text.contains("\u{0}"), !text.contains("\u{1B}") else { throw Failure.textTooLong }
         // Bracketed paste prevents multiline prompts becoming separate shell commands.
         // Text remains a single literal argument; nothing is evaluated by a shell.
         _ = try run(["send-keys", "-t", paneID, "-l", "--", "\u{1B}[200~" + text + "\u{1B}[201~"])
